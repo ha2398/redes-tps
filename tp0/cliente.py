@@ -35,12 +35,17 @@ def caesar_cipher(input_string, shift):
 	'''
 
 	encoded = ''
-	for i in input_string: encoded = encoded + chr(ord(i) + shift)
+	for i in input_string: encoded = encoded + chr(ord(i) - shift)
 	return encoded
 
 
 def main():
 	tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+	# Set timeout for recv.
+	rcv_timeo = struct.pack('ll', 15, 0)
+	tcp.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, rcv_timeo)
+
 	dest = (args.ip_server, args.port_server)
 	tcp.connect(dest)
 
@@ -61,7 +66,7 @@ def main():
 	# Receive string from server.
 	server_string = tcp.recv(input_string_size)
 
-	print 'Received \'' + server_string + '\' from server.'
+	print server_string
 	tcp.close()
 
 

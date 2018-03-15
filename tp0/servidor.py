@@ -10,6 +10,7 @@ to client.
 import argparse as ap
 import socket
 import struct
+import threading
 
 # Add command line arguments.
 parser = ap.ArgumentParser()
@@ -30,16 +31,21 @@ def decode_caesar(input_string, shift):
 	'''
 
 	decoded = ''
-	for i in input_string: decoded = decoded + chr(ord(i) - shift)
+	for i in input_string: decoded = decoded + chr(ord(i) + shift)
 	return decoded
 
 
 def main():
-	tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+	# Set timeout for recv.
+	rcv_timeo = struct.pack('ll', 15, 0)
+	server.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, rcv_timeo)
+
 	orig = ('', args.port_server)
-	tcp.bind(orig)
-	tcp.listen(1)
-	con, client = tcp.accept()
+	server.bind(orig)
+	server.listen(1)
+	con, client = server.accept()
 
 	# Receive the string size from the client.
 	msg = con.recv(4)
@@ -53,11 +59,11 @@ def main():
 	caesar_shift = struct.unpack('!i', msg)[0]
 
 	decoded = decode_caesar(encoded_string, caesar_shift)
-	print 'Decoded string:', decoded
+	print decoded
 
 	# Send decoded string back to client.
 	con.send(decoded)
-	tcp.close()
+	server.close()
 
 
 main()
