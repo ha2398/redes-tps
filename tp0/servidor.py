@@ -35,17 +35,12 @@ def decode_caesar(input_string, shift):
 	return decoded
 
 
-def main():
-	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def handle_client(con):
+	'''
+		Handle a new client connection.
 
-	# Set timeout for recv.
-	rcv_timeo = struct.pack('ll', 15, 0)
-	server.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, rcv_timeo)
-
-	orig = ('', args.port_server)
-	server.bind(orig)
-	server.listen(1)
-	con, client = server.accept()
+		@con: Client socket.
+	'''
 
 	# Receive the string size from the client.
 	msg = con.recv(4)
@@ -63,6 +58,24 @@ def main():
 
 	# Send decoded string back to client.
 	con.send(decoded)
+
+
+def main():
+	server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+	# Set timeout for recv.
+	rcv_timeo = struct.pack('ll', 15, 0)
+	server.setsockopt(socket.SOL_SOCKET, socket.SO_RCVTIMEO, rcv_timeo)
+
+	orig = ('', args.port_server)
+	server.bind(orig)
+
+	while True:
+		server.listen(1)
+		con, client = server.accept()
+		t = threading.Thread(target=handle_client, args=(con,))
+		t.start()
+
 	server.close()
 
 

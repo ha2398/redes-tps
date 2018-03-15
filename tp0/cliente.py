@@ -24,7 +24,7 @@ args = parser.parse_args()
 
 def caesar_cipher(input_string, shift):
 	'''
-		Applies the Caesar Cipher to a string.
+		Apply the Caesar Cipher to a string.
 
 		@input_string:	String to encode.
 		@shift: Unsigned integer that represents the number of shifts to apply
