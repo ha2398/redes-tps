@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 '''
 Trabalho Pratico 0: Redes de Computadores DCC023
@@ -47,14 +47,16 @@ def handle_client(con):
 	string_size = struct.unpack('!i', msg)[0]
 
 	# Receive the encoded string from the client.
-	encoded_string = con.recv(string_size)
+	msg = con.recv(string_size)
+	encoded_string = msg.decode('ascii')
+	print(string_size)
 
 	# Receive the Caesar Cipher shift value from the client.
 	msg = con.recv(4)
 	caesar_shift = struct.unpack('!i', msg)[0]
 
 	decoded = decode_caesar(encoded_string, caesar_shift)
-	print decoded
+	print(decoded)
 
 	# Send decoded string back to client.
 	con.send(decoded)

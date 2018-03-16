@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 '''
 Trabalho Pratico 0: Redes de Computadores DCC023
@@ -57,7 +57,7 @@ def main():
 
 	# Send the encoded string to server.
 	msg = caesar_cipher(args.input_string, args.shift)
-	tcp.send(msg)
+	tcp.send(msg.encode('ascii'))
 
 	# Send the Caesar Cipher shift to server.
 	msg = struct.pack('!i', args.shift)
@@ -66,7 +66,7 @@ def main():
 	# Receive string from server.
 	server_string = tcp.recv(input_string_size)
 
-	print server_string
+	print(server_string)
 	tcp.close()
 
 
