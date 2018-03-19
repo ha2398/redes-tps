@@ -66,7 +66,7 @@ def main():
 	# Receive string from server.
 	server_string = tcp.recv(input_string_size)
 
-	print(server_string)
+	print(server_string.decode('ascii'))
 	tcp.close()
 
 

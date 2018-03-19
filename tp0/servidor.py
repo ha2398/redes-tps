@@ -49,7 +49,6 @@ def handle_client(con):
 	# Receive the encoded string from the client.
 	msg = con.recv(string_size)
 	encoded_string = msg.decode('ascii')
-	print(string_size)
 
 	# Receive the Caesar Cipher shift value from the client.
 	msg = con.recv(4)
@@ -59,7 +58,7 @@ def handle_client(con):
 	print(decoded)
 
 	# Send decoded string back to client.
-	con.send(decoded)
+	con.send(decoded.encode('ascii'))
 
 
 def main():
