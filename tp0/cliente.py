@@ -45,6 +45,29 @@ def caesar_cipher(input_string, shift):
 	return encoded
 
 
+def recvall(socket, size):
+	'''
+		Receive all data of a certain size through a socket.
+
+		@socket: Socket object to receive data through.
+		@size: Total size of data to receive.
+
+		@return: The complete data received.
+	'''
+
+	data = b''
+
+	while len(data) < size:
+		msg = socket.recv(size - len(data))
+
+		if not msg:
+			return None
+
+		data += msg
+
+	return data
+
+
 def main():
 	tcp = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -59,18 +82,19 @@ def main():
 	
 	# Send size of input string to server.
 	msg = struct.pack('!i', input_string_size)
-	tcp.send(msg)
+	tcp.sendall(msg)
 
 	# Send the encoded string to server.
 	msg = caesar_cipher(args.input_string, args.shift)
-	tcp.send(msg.encode('ascii'))
+	tcp.sendall(msg.encode('ascii'))
 
 	# Send the Caesar Cipher shift to server.
 	msg = struct.pack('!i', args.shift)
-	tcp.send(msg)
+	tcp.sendall(msg)
 
 	# Receive string from server.
-	server_string = tcp.recv(input_string_size)
+	data = b''
+	server_string = recvall(tcp, input_string_size)
 
 	print(server_string.decode('ascii'))
 	tcp.close()

@@ -41,6 +41,29 @@ def decode_caesar(input_string, shift):
 	return decoded
 
 
+def recvall(socket, size):
+	'''
+		Receive all data of a certain size through a socket.
+
+		@socket: Socket object to receive data through.
+		@size: Total size of data to receive.
+
+		@return: The complete data received.
+	'''
+
+	data = b''
+
+	while len(data) < size:
+		msg = socket.recv(size - len(data))
+
+		if not msg:
+			return None
+
+		data += msg
+
+	return data
+
+
 def handle_client(con):
 	'''
 		Handle a new client connection.
@@ -49,22 +72,22 @@ def handle_client(con):
 	'''
 
 	# Receive the string size from the client.
-	msg = con.recv(4)
+	msg = recvall(con, 4)
 	string_size = struct.unpack('!i', msg)[0]
 
 	# Receive the encoded string from the client.
-	msg = con.recv(string_size)
+	msg = recvall(con, string_size)
 	encoded_string = msg.decode('ascii')
 
 	# Receive the Caesar Cipher shift value from the client.
-	msg = con.recv(4)
+	msg = recvall(con, 4)
 	caesar_shift = struct.unpack('!i', msg)[0]
 
 	decoded = decode_caesar(encoded_string, caesar_shift)
 	print(decoded)
 
 	# Send decoded string back to client.
-	con.send(decoded.encode('ascii'))
+	con.sendall(decoded.encode('ascii'))
 
 
 def main():
