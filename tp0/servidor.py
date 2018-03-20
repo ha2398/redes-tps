@@ -28,10 +28,16 @@ def decode_caesar(input_string, shift):
 
 		@return: String that represents the input string after Caesar Cipher 
 			decoding.
-	'''
+	'''	
 
 	decoded = ''
-	for i in input_string: decoded = decoded + chr(ord(i) + shift)
+	for i in input_string:
+		temp = ord(i) - (shift % 26)
+		if temp < ord('a'):
+			decoded += chr(ord('z') + 1 + (temp % (- ord('a'))))
+		else:
+			decoded += chr(temp)
+
 	return decoded
 
 
@@ -73,7 +79,12 @@ def main():
 
 	while True:
 		server.listen(1)
-		con, client = server.accept()
+
+		try:
+			con, client = server.accept()
+		except BlockingIOError:
+			continue
+			
 		t = threading.Thread(target=handle_client, args=(con,))
 		t.start()
 

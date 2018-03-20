@@ -3,7 +3,7 @@
 '''
 Trabalho Pratico 0: Redes de Computadores DCC023
 Autor: Hugo Araujo de Sousa (2013007463)
-cliente.py: Sends a string to the server and gets it back encrypted.
+cliente.py: Sends an encoded string to the server and gets it back decoded.
 '''
 
 import argparse as ap
@@ -15,7 +15,7 @@ parser = ap.ArgumentParser()
 
 parser.add_argument('ip_server', type=str, help='Server IP address')
 parser.add_argument('port_server', type=int, help='Server port')
-parser.add_argument('input_string', type=str, help='Input string to encrypt')
+parser.add_argument('input_string', type=str, help='Input string to decode')
 parser.add_argument('shift', type=int, \
 	help='Unsigned integer to use in Caesar Cipher')
 
@@ -35,7 +35,13 @@ def caesar_cipher(input_string, shift):
 	'''
 
 	encoded = ''
-	for i in input_string: encoded = encoded + chr(ord(i) - shift)
+	for i in input_string:
+		temp = ord(i) + shift % 26
+		if temp > ord('z'):
+			encoded += chr((temp % (ord('z') + 1)) + ord('a'))
+		else:
+			encoded += chr(temp)
+
 	return encoded
 
 
