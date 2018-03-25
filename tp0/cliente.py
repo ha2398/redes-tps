@@ -9,6 +9,7 @@ cliente.py: Sends an encoded string to the server and gets it back decoded.
 import argparse as ap
 import socket
 import struct
+import sys
 
 # Add command line arguments.
 parser = ap.ArgumentParser()
@@ -97,6 +98,7 @@ def main():
 	server_string = recvall(tcp, input_string_size)
 
 	print(server_string.decode('ascii'))
+	sys.stdout.flush()
 	tcp.close()
 
 

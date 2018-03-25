@@ -11,6 +11,7 @@ import argparse as ap
 import socket
 import struct
 import threading
+import sys
 
 # Add command line arguments.
 parser = ap.ArgumentParser()
@@ -85,6 +86,7 @@ def handle_client(con):
 
 	decoded = decode_caesar(encoded_string, caesar_shift)
 	print(decoded)
+	sys.stdout.flush()
 
 	# Send decoded string back to client.
 	con.sendall(decoded.encode('ascii'))
